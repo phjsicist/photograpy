@@ -15,6 +15,9 @@ class Layer:
         self._parent: Optional[Layer] = None
         self._child: Optional[Layer] = None
 
+    def shape(self) -> tuple[int, int]:
+        return self._content.shape[:2]
+
     def get_content(self) -> Optional[NDArray[np.int_]]:
         if self._content is None:
             return None
