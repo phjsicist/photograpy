@@ -9,6 +9,7 @@ from typing import TYPE_CHECKING
 if TYPE_CHECKING:
     from .filter import Filter
 
+
 class Layer:
     def __init__(self) -> None:
         self._content: Optional[NDArray[np.int_]] = None
