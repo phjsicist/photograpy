@@ -29,9 +29,9 @@ class Layer:
     def apply(self, parent: Layer) -> None:
         self.parent = parent
         parent.child = self
-        self._apply()
+        self.update()
 
-    def _apply(self) -> None:
+    def update(self) -> None:
         raise NotImplementedError
 
 
@@ -61,9 +61,9 @@ class LayerGroup(Layer):
             self.layers.append(layer)
             self.parent.add_layer(self)
 
-    def _apply(self) -> None:
+    def update(self) -> None:
         if self.layers:
             self.layers[0].parent = self.parent
-            self.layers[0]._apply()
+            self.layers[0].update()
         else:
             pass

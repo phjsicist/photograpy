@@ -24,12 +24,12 @@ class FourierFilter(Layer):
 
 
 class FftFilter(FourierFilter):
-    def _apply(self):
+    def update(self):
         self.fcontent = rfft2(self.parent.content, axes=(0, 1))
 
 
 class IfftFilter(Layer):
-    def _apply(self):
+    def update(self):
         if hasattr(self.parent, 'fcontent'):
             self.content = irfft2(self.parent.fcontent, axes=(0, 1)).real.astype(int)
         else:

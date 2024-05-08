@@ -14,7 +14,7 @@ class ReshapeFilter(InterpolationFilter):
         super().__init__()
         self.new_shape = new_shape
 
-    def _apply(self) -> None:
+    def update(self) -> None:
         new_height, new_width = self.new_shape
 
         new_h_axis = np.linspace(0, self.parent.shape()[0]-1, new_height)
