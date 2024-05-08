@@ -11,6 +11,6 @@ class InvertFilter(Layer):
             self.channels = channels
 
     def update(self) -> None:
-        self.content = self.parent.get_content()   
+        self._content = self.parent.get_content()   
         for chn in self.channels:
-            self.content[:, :, chn] = 255 - self.content[:, :, chn]
+            self._content[:, :, chn] = 255 - self._content[:, :, chn]

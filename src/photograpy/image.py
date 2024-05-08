@@ -5,8 +5,9 @@ from .layer import Layer
 
 
 class ImageLayer(Layer):
-    def __init__(self, img: NDArray, interpolation_method='linear'):
-        self.content = np.atleast_2d(img).astype(int)
+    def __init__(self, img: NDArray):
+        super().__init__()
+        self._content = np.atleast_2d(img).astype(int)
 
-        if self.content.ndim == 2:
-            self.content = np.stack([self.content]*3, axis=-1)
+        if self._content.ndim == 2:
+            self._content = np.stack([self._content]*3, axis=-1)

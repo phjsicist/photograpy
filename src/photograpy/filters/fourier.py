@@ -31,6 +31,6 @@ class FftFilter(FourierFilter):
 class IfftFilter(Layer):
     def update(self):
         if hasattr(self.parent, 'fcontent'):
-            self.content = irfft2(self.parent.fcontent, axes=(0, 1)).real.astype(int)
+            self._content = irfft2(self.parent.fcontent, axes=(0, 1)).real.astype(int)
         else:
             raise ValueError('IfftFilter can only be applied to fourier space layers.')

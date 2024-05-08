@@ -22,4 +22,4 @@ class ReshapeFilter(InterpolationFilter):
 
         hh, ww = np.meshgrid(new_h_axis, new_w_axis, indexing='ij')
 
-        self.content = self.get_interpolator()((hh, ww)).astype(int)
+        self._content = self.get_interpolator()((hh, ww)).astype(int)

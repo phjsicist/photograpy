@@ -1,19 +1,37 @@
 from __future__ import annotations
 
-from typing import Any, Iterable, Optional
+from typing import Any, Iterable, Optional, TYPE_CHECKING
 
 import numpy as np
 from numpy.typing import NDArray
 
+if TYPE_CHECKING:
+    from .mask import Mask
+
 
 class Layer:
     def __init__(self) -> None:
-        self.content: Optional[NDArray[np.int_]] = None
+        self._content: Optional[NDArray[np.int_]] = None
         self.child: Optional[Layer] = None
+        self.mask: Optional[Mask] = None
         self.parent: Optional[Layer] = None
+
+    @property
+    def content(self) -> Optional[NDArray[np.int_]]:
+        if self.mask is None:
+            return self._content
+        else:
+            return (self.parent.content + self.mask.content * (self._content - self.parent.content)).astype(int)
+        
+    @content.setter
+    def content(self, _) -> None:
+        pass
         
     def shape(self) -> tuple[int, int]:
-        return self.content.shape[:2]
+        if self.content is None:
+            return None
+        else:
+            return self.content.shape[:2]
 
     def get_content(self) -> Optional[NDArray[np.int_]]:
         if self.content is None:
@@ -33,6 +51,12 @@ class Layer:
 
     def update(self) -> None:
         raise NotImplementedError
+    
+    def add_mask(self, mask: Mask | type[Mask], *args, **kwargs) -> None:
+        if isinstance(mask, type):
+            mask(*args, **kwargs).apply(self)
+        else:
+            mask.apply(self)
 
 
 class LayerGroup(Layer):
@@ -50,7 +74,7 @@ class LayerGroup(Layer):
             return None
         
     @content.setter
-    def content(self, value: Any) -> None:
+    def content(self, _) -> None:
         pass
 
     def append_layer(self, layer: Layer | type[Layer], *args, **kwargs) -> None:
