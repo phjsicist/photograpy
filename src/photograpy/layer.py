@@ -1,31 +1,69 @@
 from __future__ import annotations
 
+from typing import Any, Iterable, Optional
+
 import numpy as np
 from numpy.typing import NDArray
-
-from typing import Optional
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .filter import Filter
 
 
 class Layer:
     def __init__(self) -> None:
-        self._content: Optional[NDArray[np.int_]] = None
-        self._parent: Optional[Layer] = None
-        self._child: Optional[Layer] = None
-
+        self.content: Optional[NDArray[np.int_]] = None
+        self.child: Optional[Layer] = None
+        self.parent: Optional[Layer] = None
+        
     def shape(self) -> tuple[int, int]:
-        return self._content.shape[:2]
+        return self.content.shape[:2]
 
     def get_content(self) -> Optional[NDArray[np.int_]]:
-        if self._content is None:
+        if self.content is None:
             return None
-        return self._content.copy()
+        return self.content.copy()
 
-    def add_filter(self, filter: Filter | type[Filter], *args, **kwargs) -> None:
-        if isinstance(filter, type):
-            filter(*args, **kwargs).apply(self)
+    def add_layer(self, layer: Layer | type[Layer], *args, **kwargs) -> None:
+        if isinstance(layer, type):
+            layer(*args, **kwargs).apply(self)
         else:
-            filter.apply(self)
+            layer.apply(self)
+
+    def apply(self, parent: Layer) -> None:
+        self.parent = parent
+        parent.child = self
+        self._apply()
+
+    def _apply(self) -> None:
+        raise NotImplementedError
+
+
+class LayerGroup(Layer):
+    def __init__(self, layers: Iterable[Layer]=()) -> None:
+        super().__init__()
+        self.layers: list[Layer] = []
+        for f in layers:
+            self.append_layer(f)
+
+    @property
+    def content(self) -> Optional[NDArray[np.int_]]:
+        if self.layers:
+            return self.layers[-1].content
+        else:
+            return None
+        
+    @content.setter
+    def content(self, value: Any) -> None:
+        pass
+
+    def append_layer(self, layer: Layer | type[Layer], *args, **kwargs) -> None:
+        if self.layers:
+            self.layers[-1].add_layer(layer, args, kwargs)
+            self.layers.append(layer)
+        else:
+            self.layers.append(layer)
+            self.parent.add_layer(self)
+
+    def _apply(self) -> None:
+        if self.layers:
+            self.layers[0].parent = self.parent
+            self.layers[0]._apply()
+        else:
+            pass

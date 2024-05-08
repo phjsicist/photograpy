@@ -1,22 +1,25 @@
 import numpy as np
 from scipy.interpolate import RegularGridInterpolator
 
-from ..filter import Filter
 from ..layer import Layer
 
-class InterpolationFilter(Filter):
+class InterpolationFilter(Layer):
     def get_interpolator(self) -> RegularGridInterpolator:
-        h_axis = np.arange(self._parent.shape()[0])
-        w_axis = np.arange(self._parent.shape()[1])
-        return RegularGridInterpolator((h_axis, w_axis), self._parent._content)
+        h_axis = np.arange(self.parent.shape()[0])
+        w_axis = np.arange(self.parent.shape()[1])
+        return RegularGridInterpolator((h_axis, w_axis), self.parent.content)
     
 class ReshapeFilter(InterpolationFilter):
-    def _apply(self, parent: Layer, new_shape: tuple[int, int]) -> None:
-        new_height, new_width = new_shape
+    def __init__(self, new_shape: tuple[int, int]) -> None:
+        super().__init__()
+        self.new_shape = new_shape
 
-        new_h_axis = np.linspace(0, parent.shape()[0]-1, new_height)
-        new_w_axis = np.linspace(0, parent.shape()[1]-1, new_width)
+    def _apply(self) -> None:
+        new_height, new_width = self.new_shape
+
+        new_h_axis = np.linspace(0, self.parent.shape()[0]-1, new_height)
+        new_w_axis = np.linspace(0, self.parent.shape()[1]-1, new_width)
 
         hh, ww = np.meshgrid(new_h_axis, new_w_axis, indexing='ij')
 
-        self._content = self.get_interpolator()((hh, ww)).astype(int)
+        self.content = self.get_interpolator()((hh, ww)).astype(int)

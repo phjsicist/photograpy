@@ -1,4 +1,4 @@
-from .filter import Filter, FilterGroup
+from .layer import Layer, LayerGroup
 from .image import ImageLayer
 
 from .filters.invert import InvertFilter

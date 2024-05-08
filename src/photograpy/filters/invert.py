@@ -1,12 +1,16 @@
 from typing import Optional
 
-from ..filter import Filter
 from ..layer import Layer
 
-class InvertFilter(Filter):
-    def _apply(self, parent: Layer, channels: Optional[tuple[int, ...]]=None) -> None:
-        self._content = parent.get_content()
+class InvertFilter(Layer):
+    def __init__(self, channels: Optional[tuple[int, ...]]=None) -> None:
+        super().__init__()
         if channels is None:
-            channels = range(self._content.shape[2])
-        for chn in channels:
-            self._content[:, :, chn] = 255 - self._content[:, :, chn]
+            self.channels = range(3)
+        else:
+            self.channels = channels
+
+    def _apply(self) -> None:
+        self.content = self.parent.get_content()   
+        for chn in self.channels:
+            self.content[:, :, chn] = 255 - self.content[:, :, chn]
