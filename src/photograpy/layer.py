@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Iterable, Optional, TYPE_CHECKING
+from typing import Iterable, Optional, TYPE_CHECKING
 
 import numpy as np
 from numpy.typing import NDArray
@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 class Layer:
-    def __init__(self) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         self._content: Optional[NDArray[np.int_]] = None
         self.child: Optional[Layer] = None
         self.mask: Optional[Mask] = None
@@ -22,10 +22,6 @@ class Layer:
             return self._content
         else:
             return (self.parent.content + self.mask.content * (self._content - self.parent.content)).astype(int)
-        
-    @content.setter
-    def content(self, _) -> None:
-        pass
         
     def shape(self) -> tuple[int, int]:
         if self.content is None:
@@ -67,14 +63,14 @@ class LayerGroup(Layer):
             self.append_layer(f)
 
     @property
-    def content(self) -> Optional[NDArray[np.int_]]:
+    def _content(self) -> Optional[NDArray[np.int_]]:
         if self.layers:
             return self.layers[-1].content
         else:
             return None
         
-    @content.setter
-    def content(self, _) -> None:
+    @_content.setter
+    def _content(self, _) -> None:
         pass
 
     def append_layer(self, layer: Layer | type[Layer], *args, **kwargs) -> None:
