@@ -10,4 +10,7 @@ class CustomMask(Mask):
         self.img = img
 
     def update(self) -> None:
-        self._content = np.atleast_2d(self.img)
+        self.content = np.atleast_2d(self.img)
+
+        if self.content.ndim == 2:
+            self.content = np.stack([self.content]*3, axis=-1)

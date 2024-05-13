@@ -12,15 +12,24 @@ class FourierFilter(Layer):
         self._fcontent: Optional[NDArray[np.complex_]] = None
         super().__init__()
 
+    @property 
+    def shape(self) -> tuple[int, int]:
+        if self._fcontent is None:
+            return None
+        else:
+            return self._fcontent.shape[:2]
+
     @property
     def fcontent(self) -> Optional[NDArray[np.complex_]]:
-        if self.mask is None:
+        if self.mask is None or self._fcontent is None:
             return self._fcontent
         else:
             return self.mask.content * self._fcontent
 
     @property
     def content(self) -> Optional[NDArray[np.int_]]:
+        if self.fcontent is None:
+            return None
         c = np.log10(np.abs(self.fcontent))
         content = (c - c.min()) / (c.max() - c.min()) * 255
         return content.astype(int)
@@ -33,6 +42,7 @@ class FourierFilter(Layer):
 class FftFilter(FourierFilter):
     def update(self):
         self._fcontent = rfft2(self.parent.content, axes=(0, 1))
+        super().update()
 
 
 class IfftFilter(Layer):
@@ -51,3 +61,4 @@ class IfftFilter(Layer):
                 raise ValueError(f'Unexpected value for cast_method: {self.cast_method}. Should be "clip" or "squeeze".')
         else:
             raise ValueError('IfftFilter can only be applied to fourier space layers.')
+        super().update()

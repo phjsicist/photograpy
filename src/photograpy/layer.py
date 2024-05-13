@@ -22,15 +22,16 @@ class Layer:
             return self._content
         else:
             return (self.parent.content + self.mask.content * (self._content - self.parent.content)).astype(int)
-        
+
+    @property 
     def shape(self) -> tuple[int, int]:
-        if self.content is None:
+        if self._content is None:
             return None
         else:
-            return self.content.shape[:2]
+            return self._content.shape[:2]
 
     def get_content(self) -> Optional[NDArray[np.int_]]:
-        if self.content is None:
+        if self._content is None:
             return None
         return self.content.copy()
 
@@ -43,10 +44,12 @@ class Layer:
     def apply(self, parent: Layer) -> None:
         self.parent = parent
         parent.child = self
-        self.update()
 
     def update(self) -> None:
-        raise NotImplementedError
+        if self.mask is not None:
+            self.mask.update()
+        if self.child is not None:
+            self.child.update()
     
     def add_mask(self, mask: Mask | type[Mask], *args, **kwargs) -> None:
         if isinstance(mask, type):
@@ -76,14 +79,16 @@ class LayerGroup(Layer):
     def append_layer(self, layer: Layer | type[Layer], *args, **kwargs) -> None:
         if self.layers:
             self.layers[-1].add_layer(layer, args, kwargs)
-            self.layers.append(layer)
-        else:
-            self.layers.append(layer)
-            self.parent.add_layer(self)
+        elif self.parent is not None:
+            layer.parent = self.parent
+        self.layers.append(layer)
+
+    def apply(self, parent: Layer) -> None:
+        if self.layers:
+            self.layers[0].parent = parent
+        super().apply(parent)
 
     def update(self) -> None:
         if self.layers:
-            self.layers[0].parent = self.parent
             self.layers[0].update()
-        else:
-            pass
+        super().update()

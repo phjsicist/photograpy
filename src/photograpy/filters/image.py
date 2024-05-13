@@ -14,3 +14,4 @@ class ImageLayer(Layer):
 
         if self._content.ndim == 2:
             self._content = np.stack([self._content]*3, axis=-1)
+        super().update()
