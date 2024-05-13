@@ -5,7 +5,6 @@ from numpy.typing import NDArray
 from scipy.fft import rfft2, irfft2
 
 from ..layer import Layer
-from ..mask import Mask
 
 
 class FourierFilter(Layer):
@@ -18,7 +17,7 @@ class FourierFilter(Layer):
         if self.mask is None:
             return self._fcontent
         else:
-            return self.mask.fcontent * self._fcontent
+            return self.mask.content * self._fcontent
 
     @property
     def content(self) -> Optional[NDArray[np.int_]]:
@@ -29,12 +28,6 @@ class FourierFilter(Layer):
     @content.setter
     def content(self, _):
         pass
-
-
-class FourierMask(Mask):
-    def __init__(self) -> None:
-        super().__init__()
-        self._fcontent: Optional[NDArray[np.complex_]] = None
 
 
 class FftFilter(FourierFilter):
