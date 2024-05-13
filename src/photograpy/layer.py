@@ -18,7 +18,7 @@ class Layer:
 
     @property
     def content(self) -> Optional[NDArray[np.int_]]:
-        if self.mask is None:
+        if self.mask is None or self.parent is None:
             return self._content
         else:
             return (self.parent.content + self.mask.content * (self._content - self.parent.content)).astype(int)

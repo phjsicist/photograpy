@@ -20,6 +20,7 @@ if __name__ == '__main__':
         for j in range(10):
             arr1[i, j] = (i + j) / 20 * 255
     im1 = ImageLayer(arr1)
+    im1.update()
     ax[0, 0].imshow(im1.content)
 
     ft11 = FftFilter()
@@ -42,6 +43,7 @@ if __name__ == '__main__':
 
     arr2 = plt.imread('examples\\image.jpg')
     im2 = ImageLayer(arr2)
+    im2.update()
     ax[0, 1].imshow(im2.content)
 
     ft21 = FftFilter()
