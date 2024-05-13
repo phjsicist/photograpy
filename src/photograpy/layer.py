@@ -10,7 +10,7 @@ if TYPE_CHECKING:
 
 
 class Layer:
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self) -> None:
         self._content: Optional[NDArray[np.int_]] = None
         self.child: Optional[Layer] = None
         self.mask: Optional[Mask] = None

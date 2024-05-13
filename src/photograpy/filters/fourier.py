@@ -9,9 +9,9 @@ from ..mask import Mask
 
 
 class FourierFilter(Layer):
-    def __init__(self, *args, **kwargs) -> None:
+    def __init__(self) -> None:
         self._fcontent: Optional[NDArray[np.complex_]] = None
-        super().__init__(*args, **kwargs)
+        super().__init__()
 
     @property
     def fcontent(self) -> Optional[NDArray[np.complex_]]:
