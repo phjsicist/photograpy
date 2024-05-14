@@ -5,5 +5,7 @@ from .filters.image import ImageLayer
 from .filters.invert import InvertFilter
 from .filters.interpolate import ReshapeFilter
 from .filters.fourier import FftFilter, IfftFilter
+from .filters.sharpen import SharpenFilter
 
 from .masks.custom import CustomMask
+from .masks.opacity import OpacityMask

@@ -2,7 +2,7 @@ from typing import Optional
 
 import numpy as np
 from numpy.typing import NDArray
-from scipy.fft import rfft2, irfft2
+from scipy.fft import rfft2, irfft2, rfftfreq, fftfreq
 
 from ..layer import Layer
 
@@ -10,6 +10,8 @@ from ..layer import Layer
 class FourierFilter(Layer):
     def __init__(self) -> None:
         self._fcontent: Optional[NDArray[np.complex_]] = None
+        self.h_freq: Optional[NDArray[np.float_]] = None
+        self.w_freq: Optional[NDArray[np.float_]] = None
         super().__init__()
 
     @property 
@@ -41,7 +43,9 @@ class FourierFilter(Layer):
 
 class FftFilter(FourierFilter):
     def update(self):
-        self._fcontent = rfft2(self.parent.content, axes=(0, 1))
+        self._fcontent = rfft2(self.parent.content, axes=(0, 1), norm='ortho')
+        self.h_freq = fftfreq(self.parent.shape[0])
+        self.w_freq = rfftfreq(self.parent.shape[1])
         super().update()
 
 
@@ -52,7 +56,7 @@ class IfftFilter(Layer):
 
     def update(self):
         if hasattr(self.parent, '_fcontent'):
-            c: NDArray[np.int_] = irfft2(self.parent.fcontent, axes=(0, 1)).real
+            c: NDArray[np.int_] = irfft2(self.parent.fcontent, axes=(0, 1), norm='ortho').real
             if self.cast_method == 'clip':
                 self._content = c.clip(0, 255).astype(int)
             elif self.cast_method == 'squeeze':
