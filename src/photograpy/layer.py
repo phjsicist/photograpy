@@ -80,13 +80,17 @@ class LayerGroup(Layer):
         if self.layers:
             self.layers[-1].add_layer(layer, args, kwargs)
         elif self.parent is not None:
-            layer.parent = self.parent
+            self.parent.add_layer(layer, args, kwargs)
+            self.parent.child = self
         self.layers.append(layer)
 
     def apply(self, parent: Layer) -> None:
-        if self.layers:
-            self.layers[0].parent = parent
         super().apply(parent)
+        if self.layers:
+            if isinstance(self.layers[0], LayerGroup):
+                self.layers[0].apply(parent)
+            else:
+                self.layers[0].parent = parent
 
     def update(self) -> None:
         if self.layers:
