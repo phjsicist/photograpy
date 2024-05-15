@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.interpolate import RegularGridInterpolator
 
-from ..layer import Layer
+from ..layer import Layer, update_func
 
 class InterpolationFilter(Layer):
     def get_interpolator(self) -> RegularGridInterpolator:
@@ -14,7 +14,8 @@ class ReshapeFilter(InterpolationFilter):
         super().__init__()
         self.new_shape = new_shape
 
-    def update(self) -> None:
+    @update_func(50)
+    def update_filter(self) -> None:
         new_height, new_width = self.new_shape
 
         new_h_axis = np.linspace(0, self.parent.shape[0]-1, new_height)
@@ -23,4 +24,3 @@ class ReshapeFilter(InterpolationFilter):
         hh, ww = np.meshgrid(new_h_axis, new_w_axis, indexing='ij')
 
         self._content = self.get_interpolator()((hh, ww)).astype(int)
-        super().update()

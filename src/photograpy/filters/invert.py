@@ -1,6 +1,6 @@
 from typing import Optional
 
-from ..layer import Layer
+from ..layer import Layer, update_func
 
 class InvertFilter(Layer):
     def __init__(self, channels: Optional[tuple[int, ...]]=None) -> None:
@@ -10,6 +10,7 @@ class InvertFilter(Layer):
         else:
             self.channels = channels
 
+    @update_func(50)
     def update(self) -> None:
         self._content = self.parent.get_content()   
         for chn in self.channels:

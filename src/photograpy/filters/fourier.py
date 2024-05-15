@@ -4,7 +4,7 @@ import numpy as np
 from numpy.typing import NDArray
 from scipy.fft import rfft2, irfft2, rfftfreq, fftfreq
 
-from ..layer import Layer
+from ..layer import Layer, update_func
 
 
 class FourierFilter(Layer):
@@ -42,11 +42,11 @@ class FourierFilter(Layer):
 
 
 class FftFilter(FourierFilter):
-    def update(self):
+    @update_func(50)
+    def update_filter(self):
         self._fcontent = rfft2(self.parent.content, axes=(0, 1), norm='ortho')
         self.h_freq = fftfreq(self.parent.shape[0])
         self.w_freq = rfftfreq(self.parent.shape[1])
-        super().update()
 
 
 class IfftFilter(Layer):
@@ -54,7 +54,8 @@ class IfftFilter(Layer):
         super().__init__()
         self.cast_method = cast_method
 
-    def update(self):
+    @update_func(50)
+    def update_filter(self):
         if hasattr(self.parent, '_fcontent'):
             c: NDArray[np.int_] = irfft2(self.parent.fcontent, axes=(0, 1), norm='ortho').real
             if self.cast_method == 'clip':
@@ -65,4 +66,3 @@ class IfftFilter(Layer):
                 raise ValueError(f'Unexpected value for cast_method: {self.cast_method}. Should be "clip" or "squeeze".')
         else:
             raise ValueError('IfftFilter can only be applied to fourier space layers.')
-        super().update()
