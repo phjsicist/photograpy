@@ -10,8 +10,8 @@ from photograpy import (ReshapeFilter,
 
 if __name__ == '__main__':
 
-    filters1 = [SharpenFilter(2, 0.5), ReshapeFilter((100, 100))]
-    filters2 = [SharpenFilter(10, 0.5), ReshapeFilter((100, 100))]
+    filters1 = [SharpenFilter(2, 1), ReshapeFilter((100, 100))]
+    filters2 = [SharpenFilter(20, 1), ReshapeFilter((100, 100))]
 
     arr1 = np.empty((10, 10))
     for i in range(10):

@@ -10,8 +10,8 @@ class ImageLayer(Layer):
         self.img = img
 
     @update_func(50)
-    def update_layer(self) -> None:
-        self._content = np.atleast_2d(self.img).astype(int)
+    def _update_layer(self) -> None:
+        self.content = np.atleast_2d(self.img).astype(int)
 
-        if self._content.ndim == 2:
-            self._content = np.stack([self._content]*3, axis=-1)
+        if self.content.ndim == 2:
+            self.content = np.stack([self.content]*3, axis=-1)

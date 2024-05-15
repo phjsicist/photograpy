@@ -18,7 +18,6 @@ class HiPassMask(Mask):
         super().__init__()
         self.radius = radius
 
-    @update_func(50)
     def update(self) -> None:
         self.content = np.zeros(self.parent.shape)
         for i in range(self.shape[0]):

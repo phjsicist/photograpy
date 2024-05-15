@@ -15,7 +15,7 @@ class ReshapeFilter(InterpolationFilter):
         self.new_shape = new_shape
 
     @update_func(50)
-    def update_filter(self) -> None:
+    def _update_filter(self) -> None:
         new_height, new_width = self.new_shape
 
         new_h_axis = np.linspace(0, self.parent.shape[0]-1, new_height)
@@ -23,4 +23,4 @@ class ReshapeFilter(InterpolationFilter):
 
         hh, ww = np.meshgrid(new_h_axis, new_w_axis, indexing='ij')
 
-        self._content = self.get_interpolator()((hh, ww)).astype(int)
+        self.content = self.get_interpolator()((hh, ww)).astype(int)
