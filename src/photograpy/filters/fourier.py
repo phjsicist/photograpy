@@ -21,7 +21,7 @@ class FourierFilter(Layer):
         else:
             return self.fcontent.shape[:2]
 
-    @update_func(70, overwrite=True)
+    @update_func(70, timer=False, overwrite=True)
     def _apply_mask(self) -> None:
         if self.mask is not None and self.fcontent is not None:
             self.fcontent = self.mask.content * self.fcontent

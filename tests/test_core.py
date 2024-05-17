@@ -1,17 +1,14 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-from photograpy import ImageLayer, LayerGroup, CustomMask
-
-from photograpy import (ReshapeFilter,
-                        FftFilter,
-                        IfftFilter,
-                        SharpenFilter)
+from photograpy import LayerGroup
+from photograpy.filters import *
+from photograpy.masks import *
 
 if __name__ == '__main__':
 
     filters1 = [SharpenFilter(2, 1), ReshapeFilter((100, 100))]
-    filters2 = [SharpenFilter(20, 1), ReshapeFilter((100, 100))]
+    filters2 = [SharpenFilter(20, 2), ReshapeFilter((378, 605))]
 
     arr1 = np.empty((10, 10))
     for i in range(10):
@@ -66,6 +63,11 @@ if __name__ == '__main__':
     fig, ax = plt.subplots(2, 1)
 
     ax[0].imshow(ft22.content)
-    ax[1].imshow(lg2.layers[0].content)
+    ax[1].imshow(lg2.content)
+
+    print(im2.update_runtime)
+    print(ft21.update_runtime)
+    print(ft22.update_runtime)
+    print(lg2.update_runtime)
 
     plt.show()

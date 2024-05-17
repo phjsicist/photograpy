@@ -1,6 +1,7 @@
 from numpy.typing import NDArray
 import numpy as np
 
+from ..base import update_func
 from ..mask import Mask
 
 
@@ -9,7 +10,8 @@ class CustomMask(Mask):
         super().__init__()
         self.img = img
 
-    def update(self) -> None:
+    @update_func(50)
+    def _update_content(self) -> None:
         self.content = np.atleast_2d(self.img)
 
         if self.content.ndim == 2:
