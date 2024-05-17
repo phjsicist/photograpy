@@ -8,4 +8,5 @@ class SharpenFilter(LayerGroup):
                   IfftFilter())
         layers[0].add_mask(HiPassMask, radius=radius)
         super().__init__(layers)
+        self.blend_mode = 'add'
         self.add_mask(OpacityMask, amount)

@@ -7,8 +7,8 @@ from photograpy.masks import *
 
 if __name__ == '__main__':
 
-    filters1 = [SharpenFilter(2, 1), ReshapeFilter((100, 100))]
-    filters2 = [SharpenFilter(20, 2), ReshapeFilter((378, 605))]
+    filters1 = [InvertFilter(), SharpenFilter(2, 1), ReshapeFilter((100, 100))]
+    filters2 = [InvertFilter(), SharpenFilter(20, 1), ReshapeFilter((378, 605))]
 
     arr1 = np.empty((10, 10))
     for i in range(10):
@@ -51,8 +51,8 @@ if __name__ == '__main__':
     fig, ax = plt.subplots(len(filters1)+3, 2)
     ax[0, 0].imshow(im1.content)
     ax[0, 1].imshow(im2.content)
-    ax[1, 0].imshow(ft11.content)
-    ax[1, 1].imshow(ft21.content)
+    # ax[1, 0].imshow(ft11.content)
+    # ax[1, 1].imshow(ft21.content)
     ax[2, 0].imshow(ft12.content)
     ax[2, 1].imshow(ft22.content)
 

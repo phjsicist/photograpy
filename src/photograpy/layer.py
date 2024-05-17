@@ -6,6 +6,7 @@ import numpy as np
 from numpy.typing import NDArray
 
 from .base import LayerBase, update_func
+from .blend import BLEND_MODES
 
 if TYPE_CHECKING:
     from .mask import Mask
@@ -14,6 +15,7 @@ if TYPE_CHECKING:
 class Layer(LayerBase):
     def __init__(self) -> None:
         super().__init__()
+        self.blend_mode = 'normal'
         self.content: Optional[NDArray[np.int_]] = None
         self.child: Optional[Layer] = None
         self.mask: Optional[Mask] = None
@@ -46,9 +48,15 @@ class Layer(LayerBase):
             self.mask.update()
 
     @update_func(70, timer=False)
-    def _apply_mask(self) -> None:
-        if self.content is not None and self.mask is not None and self.parent is not None and self.shape == self.parent.shape:
-            self.content = (self.parent.content + self.mask.content * (self.content - self.parent.content)).astype(int)
+    def _apply_blend(self) -> None:
+        base = self.parent.content if self.parent is not None else None
+        mask = self.mask.content if self.mask is not None else None
+        if mask is None and base is None:
+            pass
+        elif self.parent is None:
+            self.content = BLEND_MODES['none']()(base, self.content, mask)
+        else:
+            self.content = BLEND_MODES[self.blend_mode]()(base, self.content, mask)
 
     @update_func(90, timer=False)
     def _update_child(self) -> None:
@@ -62,17 +70,6 @@ class LayerGroup(Layer):
         self.layers: list[Layer] = []
         for f in layers:
             self.append_layer(f)
-
-    @property
-    def content(self) -> Optional[NDArray[np.int_]]:
-        if self.layers:
-            return self.layers[-1].content
-        else:
-            return None
-        
-    @content.setter
-    def content(self, _) -> None:
-        pass
 
     def append_layer(self, layer: Layer | type[Layer], *args, **kwargs) -> None:
         if self.layers:
@@ -95,3 +92,10 @@ class LayerGroup(Layer):
     def _update_layers(self) -> None:
         if self.layers:
             self.layers[0].update()
+
+    @update_func(50)
+    def _update_content(self) -> None:
+        if self.layers:
+            self.content = self.layers[-1].content
+        else:
+            self.content = self.parent.content

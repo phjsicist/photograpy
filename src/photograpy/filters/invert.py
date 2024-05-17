@@ -15,4 +15,3 @@ class InvertFilter(Layer):
         self.content = self.parent.get_content()   
         for chn in self.channels:
             self.content[:, :, chn] = 255 - self.content[:, :, chn]
-        super().update()
