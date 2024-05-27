@@ -27,6 +27,7 @@ class FftFilter(FourierFilter):
 class IfftFilter(Layer):
     def __init__(self, cast_method='clip') -> None:
         super().__init__()
+        self.blend_mode = 'none'
         self.cast_method = cast_method
 
     @update_func(50)

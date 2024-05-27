@@ -1,6 +1,5 @@
 from typing import Optional
 
-import numpy as np
 from numpy.typing import NDArray
 
 class BlendMode:
@@ -14,7 +13,7 @@ class BlendMode:
 class BlendNone(BlendMode):
     def blend(self) -> NDArray:
         if self.mask is not None:
-            return (self.mask * self.content).astype(self.content.dtype)
+            return self.mask * self.content
         return self.content
 
 class BlendNormal(BlendMode):
@@ -35,7 +34,7 @@ class BlendMultiply(BlendMode):
              return self.base * self.mask * self.content / 255
         return self.base * self.content / 255
 
-BLEND_MODES = {
+BLEND_MODES: dict[str, BlendMode] = {
      'none': BlendNone,
      'normal': BlendNormal,
      'add': BlendAdd,
