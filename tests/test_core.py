@@ -2,6 +2,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from photograpy import LayerGroup
+from photograpy.algorithms import *
 from photograpy.filters import *
 from photograpy.masks import *
 
@@ -13,7 +14,7 @@ if __name__ == '__main__':
     arr1 = np.empty((10, 10))
     for i in range(10):
         for j in range(10):
-            arr1[i, j] = (i + j) / 20 * 255
+            arr1[i, j] = (i + j) / 20
     im1 = ImageLayer(arr1)
 
     ft11 = FftFilter()

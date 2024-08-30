@@ -16,12 +16,12 @@ class Layer(LayerBase):
     def __init__(self) -> None:
         super().__init__()
         self.blend_mode = 'normal'
-        self.content: Optional[NDArray[np.int_]] = None
+        self.content: Optional[NDArray[np.float_]] = None
         self.child: Optional[Layer] = None
         self.mask: Optional[Mask] = None
         self.parent: Optional[Layer] = None
 
-    def get_content(self) -> Optional[NDArray[np.int_]]:
+    def get_content(self) -> Optional[NDArray[np.float_]]:
         if self.content is None:
             return None
         return self.content.copy()

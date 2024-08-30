@@ -25,14 +25,14 @@ class BlendNormal(BlendMode):
 class BlendAdd(BlendMode):
     def blend(self) -> NDArray:
         if self.mask is not None:
-                return (self.base + self.mask * self.content).clip(0, 255)
-        return (self.base + self.content).clip(0, 255)
+                return (self.base + self.mask * self.content).clip(0, 1)
+        return (self.base + self.content).clip(0, 1)
     
 class BlendMultiply(BlendMode):
      def blend(self) -> NDArray:
         if self.mask is not None:
-             return self.base * self.mask * self.content / 255
-        return self.base * self.content / 255
+             return self.base * self.mask * self.content
+        return self.base * self.content
 
 BLEND_MODES: dict[str, BlendMode] = {
      'none': BlendNone,

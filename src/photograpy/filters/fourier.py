@@ -33,11 +33,11 @@ class IfftFilter(Layer):
     @update_func(50)
     def _update_filter(self):
         if np.iscomplexobj(self.parent.content):
-            c: NDArray[np.int_] = irfft2(self.parent.content, axes=(0, 1), norm='ortho').real
+            c: NDArray[np.float_] = irfft2(self.parent.content, axes=(0, 1), norm='ortho').real
             if self.cast_method == 'clip':
-                self.content = c.clip(0, 255).astype(int)
+                self.content = c.clip(0, 1).astype(np.float_)
             elif self.cast_method == 'squeeze':
-                self.content = ((c - c.min()) / (c.max() - c.min()) * 255).astype(int)
+                self.content = ((c - c.min()) / (c.max() - c.min())).astype(np.float_)
             else:
                 raise ValueError(f'Unexpected value for cast_method: {self.cast_method}. Should be "clip" or "squeeze".')
         else:

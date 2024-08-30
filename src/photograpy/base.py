@@ -25,7 +25,7 @@ def update_func(position: int, timer=True, overwrite=False):
 
 
 class LayerMeta(type):
-    def __init__(cls, name: str, bases: tuple[type], attrs: dict[str, Any]):
+    def __init__(cls, name: str, bases: tuple[type], attrs: dict[str, Any]) -> None:
         # initialise update function registry and populate it with update functions from bases classes
         cls.update_functions: dict[str, Callable[[Any], None]] = {}
         for base in bases:
